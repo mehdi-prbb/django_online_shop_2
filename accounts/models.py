@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 
+from . managers import CustomUserManager
+
 
 class CustomUser(AbstractBaseUser):
     email = models.EmailField(max_length=255, unique=True)
@@ -8,6 +10,8 @@ class CustomUser(AbstractBaseUser):
     full_name = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+
+    objects = CustomUserManager()
 
     USERNAME_FIELD = 'phone_number'
     REQUIRED_FIELDS = ['email', 'fullname']
