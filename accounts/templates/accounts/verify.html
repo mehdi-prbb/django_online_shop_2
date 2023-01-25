@@ -1,0 +1,11 @@
+{% extends '_base.html' %}
+
+{% block page_title %}Verify Code{% endblock page_title %}
+
+{% block content %}
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="verify">
+    </form>
+{% endblock content %}
