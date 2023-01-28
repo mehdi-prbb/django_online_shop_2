@@ -41,7 +41,8 @@ class UserRegisterForm(forms.Form):
     email = forms.EmailField()
     full_name = forms.CharField(label='full name')
     phone = forms.CharField(max_length=11)
-    password = forms.CharField(widget=forms.PasswordInput)
+    password1 = forms.CharField(label='password', widget=forms.PasswordInput)
+    password2 = forms.CharField(label='confirm password', widget=forms.PasswordInput)
 
 
     def clean_email(self):
@@ -55,10 +56,24 @@ class UserRegisterForm(forms.Form):
     def clean_phone(self):
         phone = self.cleaned_data['phone']
         user = CustomUser.objects.filter(phone_number=phone).exists()
+
+        if len(phone) != 11:
+            raise ValidationError('Invalid phone number')
         
         if user:
             raise ValidationError('This phone number already exist')
         return phone
+
+    def clean(self):
+        cd = super().clean()
+        pass1 = cd.get('password1')
+        pass2 = cd.get('password2')
+
+        if pass1 and pass2 and len(pass1) <= 8:
+            raise ValidationError("Password must be more than 8 character")
+
+        if pass1 != pass2:
+            raise ValidationError("Password Does'nt match together")
 
 class VerifyCodeForm(forms.Form):
     code = forms.IntegerField()
