@@ -140,3 +140,6 @@ AUTHENTICATION_BACKENDS = [
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
+
+# Email config
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

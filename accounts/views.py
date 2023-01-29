@@ -1,13 +1,16 @@
-from django.shortcuts import render, redirect
-from django.views import View
 import random
-from django.contrib import messages
+from django.views import View
 from datetime import datetime
-from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.urls import reverse_lazy
+from django.shortcuts import render, redirect
+from django.contrib.auth import views as auth_views
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import authenticate, login, logout
 
-from . forms import UserRegisterForm, VerifyCodeForm, UserLoginForm
-from utils import send_otp_code, cal_seconds
 from . models import OtpCode, CustomUser
+from utils import send_otp_code, cal_seconds
+from . forms import UserRegisterForm, VerifyCodeForm, UserLoginForm
 
 
 class UserRegisterView(View):
@@ -124,3 +127,29 @@ class UserLoginView(View):
             messages.error(request, 'Invalid username or password')
         
         return render(request, self.template_name, {'form':form})
+
+
+class UserLogOutView(LoginRequiredMixin, View):
+    def get(self, request):
+        logout(request)
+        messages.success(request, 'you are logged out successfully', 'success')
+        return redirect('pages:home')
+
+
+class UserPasswordResetView(auth_views.PasswordResetView):
+    template_name = 'accounts/password_reset_form.html'
+    success_url = reverse_lazy('accounts:password_reset_done')
+    email_template_name = 'accounts/password_reset_email.html'
+
+
+class UserPasswordResetDoneView(auth_views.PasswordResetDoneView):
+    template_name = 'accounts/password_reset_done.html'
+
+
+class UserPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    template_name = 'accounts/password_reset_confirm.html'
+    success_url = reverse_lazy('accounts:password_reset_complete')
+
+
+class UserPasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+    template_name = 'accounts/password_reset_complete.html'
