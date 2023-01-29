@@ -80,5 +80,5 @@ class VerifyCodeForm(forms.Form):
 
 
 class UserLoginForm(forms.Form):
-    user_name = forms.CharField(label='email or phone:', widget=forms.TextInput(attrs={'class':'form-control'}))
+    username = forms.CharField(label='email or phone:', widget=forms.TextInput(attrs={'class':'form-control'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))

@@ -3,6 +3,7 @@ from django.views import View
 import random
 from django.contrib import messages
 from datetime import datetime
+from django.contrib.auth import authenticate, login
 
 from . forms import UserRegisterForm, VerifyCodeForm, UserLoginForm
 from utils import send_otp_code, cal_seconds
@@ -12,6 +13,12 @@ from . models import OtpCode, CustomUser
 class UserRegisterView(View):
     form_class = UserRegisterForm
     template_name = 'accounts/register.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.warning(request, 'You are already logged in')
+            return redirect('pages:home')
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
         form = self.form_class
@@ -43,6 +50,12 @@ class UserRegisterView(View):
 
 class VerifyCodeView(View):
     form_class = VerifyCodeForm
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.warning(request, 'You are already logged in')
+            return redirect('pages:home')
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
         form = self.form_class
@@ -80,10 +93,34 @@ class VerifyCodeView(View):
 
 class UserLoginView(View):
     form_class = UserLoginForm
+    template_name = 'accounts/login.html'
+
+    def setup(self, request, *args, **kwargs):
+        self.next = request.GET.get('next')
+        return super().setup(request, *args, **kwargs)
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.warning(request, 'You are already logged in')
+            return redirect('pages:home')
+        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request):
         form = self.form_class
-        return render(request, 'accounts/login.html', {'form':form})
+        return render(request, self.template_name, {'form':form})
 
     def post(self, request):
-        pass
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = authenticate(request, username=cd['username'], password=cd['password'])
+            if user is not None:
+                login(request, user)
+                messages.success(request, 'you are logged in successfully')
+                if self.next:
+                    return redirect(self.next)
+                return redirect('pages:home')
+            messages.error(request, 'Invalid username or password')
+        
+        return render(request, self.template_name, {'form':form})
