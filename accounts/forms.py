@@ -38,11 +38,11 @@ class CustomUserChangeForm(forms.ModelForm):
 
 
 class UserRegisterForm(forms.Form):
-    email = forms.EmailField()
-    full_name = forms.CharField(label='full name')
-    phone = forms.CharField(max_length=11)
-    password1 = forms.CharField(label='password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='confirm password', widget=forms.PasswordInput)
+    email = forms.EmailField(widget=forms.TextInput(attrs={'class':'form-control'}))
+    full_name = forms.CharField(label='full name', widget=forms.TextInput(attrs={'class':'form-control'}))
+    phone = forms.CharField(max_length=11, widget=forms.TextInput(attrs={'class':'form-control'}))
+    password1 = forms.CharField(label='password', widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    password2 = forms.CharField(label='confirm password', widget=forms.PasswordInput(attrs={'class':'form-control'}))
 
 
     def clean_email(self):
@@ -77,3 +77,8 @@ class UserRegisterForm(forms.Form):
 
 class VerifyCodeForm(forms.Form):
     code = forms.IntegerField()
+
+
+class UserLoginForm(forms.Form):
+    user_name = forms.CharField(label='email or phone:', widget=forms.TextInput(attrs={'class':'form-control'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}))

@@ -4,7 +4,7 @@ import random
 from django.contrib import messages
 from datetime import datetime
 
-from . forms import UserRegisterForm, VerifyCodeForm
+from . forms import UserRegisterForm, VerifyCodeForm, UserLoginForm
 from utils import send_otp_code, cal_seconds
 from . models import OtpCode, CustomUser
 
@@ -78,3 +78,12 @@ class VerifyCodeView(View):
         return redirect('pages:home')
 
 
+class UserLoginView(View):
+    form_class = UserLoginForm
+
+    def get(self, request):
+        form = self.form_class
+        return render(request, 'accounts/login.html', {'form':form})
+
+    def post(self, request):
+        pass
