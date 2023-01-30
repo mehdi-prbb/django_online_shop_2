@@ -1,0 +1,22 @@
+{% extends '_base.html' %}
+
+{% block page_title %}Products{% endblock page_title %}
+
+{% block content %}
+    {% for product in products %}
+        <div class="card" style="width: 18rem;">
+            <img src="{{ product.image.url }}" class="card-img-top" alt="...">
+            <div class="card-body">
+                <a href="{{ product.get_absolute_url }}" class="card-title">{{ product.name }}</a>
+            </div>
+    {% endfor %}
+    </div>
+{% endblock content %}
+
+
+
+
+
+
+
+
