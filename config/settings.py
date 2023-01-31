@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Third party
+    'storages',
+
     # My apps
     'accounts.apps.AccountsConfig',
     'pages.apps.PagesConfig',
@@ -127,10 +130,6 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
-# Media files
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -153,3 +152,13 @@ MESSAGE_TAGS = {
 
 # Email config
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# Arvan cloud storage
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_S3_ACCESS_KEY_ID = 'eea506b2-006d-48d2-8684-4d338887c886'
+AWS_S3_SECRET_ACCESS_KEY = 'b40d6e53829f9b96693648bbd3f3a277436779f5'
+AWS_S3_ENDPOINT_URL = 'https://s3.ir-thr-at1.arvanstorage.com'
+AWS_STORAGE_BUCKET_NAME = 'charchi'
+AWS_SERVICE_NAME = 's3'
+AWS_S3_FILE_OVERWRITE = False
