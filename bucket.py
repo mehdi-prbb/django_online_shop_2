@@ -15,7 +15,11 @@ class Bucket:
 
     def get_objects(self):
         result = self.connection.list_objects_v2(Bucket=settings.AWS_STORAGE_BUCKET_NAME)
-        return result
+        if result['KeyCount']:
+            return result['Contents']
+        else:
+            return None
+            
     
 
 bucket = Bucket()
