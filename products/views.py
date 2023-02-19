@@ -1,8 +1,9 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
+from django.contrib import messages
 
 from . models import Product
-from .task import all_bucket_object_tasks
+from .import tasks
 
 
 class ProductsListView(View):
@@ -21,9 +22,14 @@ class BucketHome(View):
     template_name = 'products/bucket.html'
 
     def get(self, request):
-        # age sync bood
+        # age async bood
         # objects = all_bucket_object_tasks.delay()
-        objects = all_bucket_object_tasks()
-        print('='*90)
-        print(objects)
+        objects = tasks.all_bucket_object_task()
         return render(request, self.template_name, {'objects':objects})
+    
+
+class DeleteBucketObject(View):
+    def get(self, request, key):
+        tasks.delete_object_task.delay(key)
+        messages.success(request, 'your object will be delete soon.')
+        return redirect('products:bucket')
