@@ -1,3 +1,5 @@
+from django.contrib.auth.mixins import UserPassesTestMixin
+
 import datetime
 import time
 
@@ -12,3 +14,8 @@ def cal_seconds(value):
     result = datetime.timedelta(hours=x.tm_hour,minutes=x.tm_min,seconds=x.tm_sec).total_seconds()
 
     return result
+
+
+class IsAdminUserMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.is_admin

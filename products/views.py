@@ -6,6 +6,7 @@ from django.contrib import messages
 from . models import Product
 from . import tasks
 from . forms import UploadImageForm
+from utils import IsAdminUserMixin
 
 
 
@@ -21,7 +22,7 @@ class ProductDetailView(View):
         return render(request, 'products/product_detail.html', {'product':product})
     
 
-class BucketHome(View):
+class BucketHome(IsAdminUserMixin, View):
     template_name = 'products/bucket.html'
 
     def get(self, request):
@@ -31,21 +32,21 @@ class BucketHome(View):
         return render(request, self.template_name, {'objects':objects})
     
 
-class DeleteBucketObject(View):
+class DeleteBucketObject(IsAdminUserMixin, View):
     def get(self, request, key):
         tasks.delete_object_task.delay(key)
         messages.success(request, 'your object will be delete soon.')
         return redirect('products:bucket')
     
 
-class DownloadBucketObject(View):
+class DownloadBucketObject(IsAdminUserMixin, View):
     def get(self, request, key):
         tasks.download_object_task.delay(key)
         messages.success(request, 'your download will be start soon.')
         return redirect('products:bucket')
 
 
-class UploadBucketObject(View):
+class UploadBucketObject(IsAdminUserMixin, View):
     form_class = UploadImageForm
 
     def get(self, request):
