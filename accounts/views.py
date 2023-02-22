@@ -1,6 +1,7 @@
+import pytz
 import random
 from django.views import View
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
@@ -9,7 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 
 from . models import OtpCode, CustomUser
-from utils import send_otp_code, cal_seconds
+from utils import send_otp_code
 from . forms import UserRegisterForm, VerifyCodeForm, UserLoginForm
 
 
@@ -33,20 +34,22 @@ class UserRegisterView(View):
         if form.is_valid():
             random_code = random.randint(1000, 9999)
 
-            otp = OtpCode.objects.filter(phone_number=form.cleaned_data['phone'])
-            if otp.exists():
-                messages.error(request, 'We have already sent you a otp code')
-            else:
-                OtpCode.objects.create(phone_number=form.cleaned_data['phone'], code=random_code)
-                send_otp_code(form.cleaned_data['phone'], random_code)
+            # otp = OtpCode.objects.filter(phone_number=form.cleaned_data['phone'])
+            # if otp.exists():
+            #     messages.error(request, 'We have already sent you a otp code')
+            # else:
+            otp = OtpCode.objects.create(phone_number=form.cleaned_data['phone'], code=random_code)
+            print(otp)
 
-                request.session['user_registration_info'] = {
-                    'phone_number' : form.cleaned_data['phone'],
-                    'email' : form.cleaned_data['email'],
-                    'full_name' : form.cleaned_data['full_name'],
-                    'password' : form.cleaned_data['password1']
-                }
-                messages.success(request, 'code sent you by text message')
+            send_otp_code(form.cleaned_data['phone'], random_code)
+
+            request.session['user_registration_info'] = {
+                'phone_number' : form.cleaned_data['phone'],
+                'email' : form.cleaned_data['email'],
+                'full_name' : form.cleaned_data['full_name'],
+                'password' : form.cleaned_data['password1']
+            }
+            messages.success(request, 'code sent you by text message')
             return redirect('accounts:verify_code')
         return render(request, self.template_name, {'form':form})
 
@@ -68,16 +71,14 @@ class VerifyCodeView(View):
         user_session = request.session['user_registration_info']
         code_instance = OtpCode.objects.get(phone_number=user_session['phone_number'])
         
-        created_time = cal_seconds(str(code_instance.created.time()))
-        now_time = cal_seconds(str(datetime.now().time()))
-        check_expiration = now_time - created_time
+        check_expiration = datetime.now(tz=pytz.timezone('Asia/Tehran')) - timedelta(minutes=2)
 
         form = self.form_class(request.POST)
 
         if form.is_valid():
             cd = form.cleaned_data
 
-            if check_expiration > 120:
+            if code_instance.created < check_expiration:
                 code_instance.delete()
                 messages.error(request, 'code expired')
                 return redirect('accounts:verify_code')
