@@ -23,6 +23,8 @@
         <td><a href="{% url 'products:bucket_obj_delete' obj.Key %}">Delete</a></td>
         </tr>
     {% endfor %}
+    <a href="{% url 'products:bucket_obj_upload' %}">Upload</a>
+    </form>
     </tbody>
   </table>
 {% endblock content %}

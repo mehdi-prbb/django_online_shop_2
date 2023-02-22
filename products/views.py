@@ -1,9 +1,12 @@
+import os
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib import messages
 
 from . models import Product
-from .import tasks
+from . import tasks
+from . forms import UploadImageForm
+
 
 
 class ProductsListView(View):
@@ -40,3 +43,22 @@ class DownloadBucketObject(View):
         tasks.download_object_task.delay(key)
         messages.success(request, 'your download will be start soon.')
         return redirect('products:bucket')
+
+
+class UploadBucketObject(View):
+    form_class = UploadImageForm
+
+    def get(self, request):
+        form = self.form_class
+        return render(request, 'products/bucket_add.html', {'form':form})
+
+    def post(self, request):
+        form = self.form_class(request.POST, request.FILES)
+
+        if form.is_valid():
+            key = form.cleaned_data['image']
+            print(str(key))
+            tasks.upload_object_task.delay(str(key))
+            messages.success(request, 'your upload will be start soon.')
+            return redirect('products:bucket')
+        return render(request, 'products/bucket_add.html', {'form':form})

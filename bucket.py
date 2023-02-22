@@ -1,3 +1,4 @@
+import os
 import boto3
 from django.conf import settings
 import logging
@@ -31,6 +32,10 @@ class Bucket:
     def download_object(self, key):
         with open(settings.AWS_LOCAL_STORAGE + key, 'wb') as f:
             self.connection.download_fileobj(settings.AWS_STORAGE_BUCKET_NAME, key, f)
+
+    def upload_object(self, key):
+        with open(key, 'rb') as data:
+            self.connection.upload_fileobj(data, settings.AWS_STORAGE_BUCKET_NAME, key)
     
     
         
