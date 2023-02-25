@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     # Third party
     'storages',
+    'django_celery_beat',
 
     # My apps
     'accounts.apps.AccountsConfig',

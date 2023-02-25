@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
+from django.core.exceptions import ObjectDoesNotExist
 
 from . models import OtpCode, CustomUser
 from utils import send_otp_code
@@ -69,14 +70,19 @@ class VerifyCodeView(View):
 
     def post(self, request):
         user_session = request.session['user_registration_info']
-        code_instance = OtpCode.objects.get(phone_number=user_session['phone_number'])
-        
+    
         check_expiration = datetime.now(tz=pytz.timezone('Asia/Tehran')) - timedelta(minutes=2)
 
         form = self.form_class(request.POST)
 
         if form.is_valid():
             cd = form.cleaned_data
+
+            try:
+                code_instance = OtpCode.objects.get(phone_number=user_session['phone_number'])
+            except ObjectDoesNotExist:
+                messages.error(request, 'invalid code')
+                return redirect('accounts:verify_code')
 
             if code_instance.created < check_expiration:
                 code_instance.delete()
@@ -89,9 +95,11 @@ class VerifyCodeView(View):
                 code_instance.delete()
                 messages.success(request, 'you registerd successfully')
                 return redirect('pages:home')
+            
             else:
                 messages.error(request, 'Invalide code')
                 return redirect('accounts:verify_code')
+                
         return redirect('pages:home')
 
 
