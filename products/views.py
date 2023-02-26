@@ -13,7 +13,7 @@ from utils import IsAdminUserMixin
 class ProductsListView(View):
     def get(self, request, cat_slug=None):
         products = Product.objects.filter(available=True)
-        categories = Category.objects.all()
+        categories = Category.objects.filter(is_sub=False)
         if cat_slug:
             category = Category.objects.get(slug=cat_slug)
             products = products.filter(category=category)
