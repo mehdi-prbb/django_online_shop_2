@@ -18,6 +18,7 @@ bucket_urls = [
 
 urlpatterns = [
     path('', views.ProductsListView.as_view(), name='products_list'),
+    path('category/<slug:cat_slug>/', views.ProductsListView.as_view(), name='cat_filter'),
     path('bucket/', include(bucket_urls)),
     path('<slug:slug>/', views.ProductDetailView.as_view(), name='product_detail'),
 ]

@@ -12,6 +12,9 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def get_absolute_url(self):
+        return reverse('products:cat_filter', args=[self.slug])
 
 
 class Product(models.Model):

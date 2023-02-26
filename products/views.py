@@ -3,7 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib import messages
 
-from . models import Product
+from . models import Product, Category
 from . import tasks
 from . forms import UploadImageForm
 from utils import IsAdminUserMixin
@@ -11,9 +11,13 @@ from utils import IsAdminUserMixin
 
 
 class ProductsListView(View):
-    def get(self, request):
+    def get(self, request, cat_slug=None):
         products = Product.objects.filter(available=True)
-        return render(request, 'products/products_list.html', {'products':products})
+        categories = Category.objects.all()
+        if cat_slug:
+            category = Category.objects.get(slug=cat_slug)
+            products = products.filter(category=category)
+        return render(request, 'products/products_list.html', {'products':products, 'categories':categories})
     
 
 class ProductDetailView(View):
