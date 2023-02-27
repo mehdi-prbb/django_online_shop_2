@@ -43,10 +43,11 @@ INSTALLED_APPS = [
     'storages',
     'django_celery_beat',
 
-    # My apps
+    # Local
     'accounts.apps.AccountsConfig',
     'pages.apps.PagesConfig',
     'products.apps.ProductsConfig',
+    'cart.apps.CartConfig',
 ]
 
 MIDDLEWARE = [
