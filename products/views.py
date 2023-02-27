@@ -5,8 +5,9 @@ from django.contrib import messages
 
 from . models import Product, Category
 from . import tasks
-from . forms import UploadImageForm, CartAddForm
+from . forms import UploadImageForm
 from utils import IsAdminUserMixin
+from cart.forms import CartAddForm
 
 
 
