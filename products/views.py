@@ -5,7 +5,7 @@ from django.contrib import messages
 
 from . models import Product, Category
 from . import tasks
-from . forms import UploadImageForm
+from . forms import UploadImageForm, CartAddForm
 from utils import IsAdminUserMixin
 
 
@@ -23,7 +23,8 @@ class ProductsListView(View):
 class ProductDetailView(View):
     def get(self, request, slug):
         product = get_object_or_404(Product, slug=slug)
-        return render(request, 'products/product_detail.html', {'product':product})
+        form = CartAddForm()
+        return render(request, 'products/product_detail.html', {'product':product, 'form':form})
     
 
 class BucketHome(IsAdminUserMixin, View):
