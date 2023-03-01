@@ -11,6 +11,7 @@
         <th scope="col">Quantity</th>
         <th scope="col">Unit Price</th>
         <th scope="col">Total Price</th>
+        <th scope="col">Remove</th>
       </tr>
     </thead>
     <tbody>
@@ -21,8 +22,13 @@
           <td>{{ item.quantity }}</td>
           <td>{{ item.product_obj.price }}</td>
           <td>{{ item.total_price }}</td>
+          <td><a href="{% url 'cart:cart_remove' item.product_obj.id %}">remove</a></td>
         </tr>
       {% endfor %}
+      <tr>
+        <td>Total</td>
+        <td>{{ cart.get_total_price }}</td>
+      </tr>
     </tbody>
 </table>
 {% endblock content %}
