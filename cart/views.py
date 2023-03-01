@@ -8,7 +8,8 @@ from products.models import Product
 
 class CartView(View):
     def get(self, request):
-        return render(request, 'cart/cart.html')
+        cart = Cart(request)
+        return render(request, 'cart/cart.html', {'cart':cart})
 
 
 class CartAddView(View):
@@ -18,4 +19,4 @@ class CartAddView(View):
         form = CartAddForm(request.POST)
         if form.is_valid():
             cart.add(product, form.cleaned_data['quantity'])
-        return redirect('cart:cart_add')
+        return redirect('cart:cart')

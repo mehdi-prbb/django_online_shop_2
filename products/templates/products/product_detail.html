@@ -8,7 +8,7 @@
     <p>{{ product.price }} Toman</p>
     <img src="{{ product.image.url }}" alt="" style="width: 300px">
     <p>{{ product.description }}</p>
-    <form action="" method="post" >
+    <form action="{% url 'cart:cart_add' product.id %}" method="POST" >
         {% csrf_token %}
         {{ form }}
         <input type="submit" value="add to cart">
