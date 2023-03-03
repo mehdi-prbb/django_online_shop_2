@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'products.apps.ProductsConfig',
     'cart.apps.CartConfig',
     'orders.apps.OrdersConfig',
+    'payment.apps.PaymentConfig',
 ]
 
 MIDDLEWARE = [
@@ -167,3 +168,13 @@ AWS_STORAGE_BUCKET_NAME = 'charchi'
 AWS_SERVICE_NAME = 's3'
 AWS_S3_FILE_OVERWRITE = False
 AWS_LOCAL_STORAGE = f'{BASE_DIR}/aws/'
+
+
+# Zarrin pal
+
+MERCHANT = "XXXXXXX-XXXXXXX-XXXX-XXXXXX-XXXXXX"
+ZP_API_REQUEST = f"https://api.zarinpal.com/pg/rest/WebGate/PaymentRequest.json"
+ZP_API_VERIFY = f"https://api.zarinpal.com/pg/rest/WebGate/PaymentVerification.json"
+ZP_API_STARTPAY = f"https://www.zarinpal.com/pg/StartPay/"
+description = "توضیحات مربوط به تراکنش را در این قسمت وارد کنید"
+CallbackURL = 'http://127.0.0.1:8000/payment/verify/'

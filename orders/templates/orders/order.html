@@ -6,4 +6,5 @@
 {% block content %}
     <h3>checkout</h3>
     <p>Total: {{ order.get_total_price }}</p>
+    <a href="{% url 'payment:order_pay' order.id %}" class="btn btn-primary">Pay</a>
 {% endblock content %}
