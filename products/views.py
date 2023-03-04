@@ -2,7 +2,7 @@ import os
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib import messages
-from django.core.exceptions import PermissionDenied
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from . models import Product, Category
 from . import tasks
@@ -39,11 +39,8 @@ class BucketHome(IsAdminUserMixin, View):
         return render(request, self.template_name, {'objects':objects})
     
 
-class DeleteBucketObject(IsAdminUserMixin, View):
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.has_perm('products.delete_product'):
-            raise PermissionDenied()
-        return super().dispatch(request, *args, **kwargs)
+class DeleteBucketObject(PermissionRequiredMixin, IsAdminUserMixin, View):
+    permission_required = 'products.delete_product'
 
     def get(self, request, key):
         tasks.delete_object_task.delay(key)
@@ -51,11 +48,8 @@ class DeleteBucketObject(IsAdminUserMixin, View):
         return redirect('products:bucket')
     
 
-class DownloadBucketObject(IsAdminUserMixin, View):
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.has_perm('products.add_product'):
-            raise PermissionDenied()
-        return super().dispatch(request, *args, **kwargs)
+class DownloadBucketObject(PermissionRequiredMixin, IsAdminUserMixin, View):
+    permission_required = 'products.add_product'
 
     def get(self, request, key):
         tasks.download_object_task.delay(key)
@@ -63,11 +57,8 @@ class DownloadBucketObject(IsAdminUserMixin, View):
         return redirect('products:bucket')
 
 
-class UploadBucketObject(IsAdminUserMixin, View):
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.has_perm('products.add_product'):
-            raise PermissionDenied()
-        return super().dispatch(request, *args, **kwargs)
+class UploadBucketObject(PermissionRequiredMixin, IsAdminUserMixin, View):
+    permission_required = 'products.add_product'
 
     form_class = UploadImageForm
 
