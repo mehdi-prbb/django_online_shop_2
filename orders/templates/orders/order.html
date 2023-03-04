@@ -6,5 +6,11 @@
 {% block content %}
     <h3>checkout</h3>
     <p>Total: {{ order.get_total_price }}</p>
+    <form action="{% url 'orders:apply_coupon' order.id %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+    <input class="btn btn-info" type="submit" value="apply">
+    </form>
+    <br><br>
     <a href="{% url 'payment:order_pay' order.id %}" class="btn btn-primary">Pay</a>
 {% endblock content %}
