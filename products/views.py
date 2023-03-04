@@ -2,6 +2,7 @@ import os
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 
 from . models import Product, Category
 from . import tasks
@@ -39,6 +40,11 @@ class BucketHome(IsAdminUserMixin, View):
     
 
 class DeleteBucketObject(IsAdminUserMixin, View):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.has_perm('products.delete_product'):
+            raise PermissionDenied()
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request, key):
         tasks.delete_object_task.delay(key)
         messages.success(request, 'your object will be delete soon.')
@@ -46,6 +52,11 @@ class DeleteBucketObject(IsAdminUserMixin, View):
     
 
 class DownloadBucketObject(IsAdminUserMixin, View):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.has_perm('products.add_product'):
+            raise PermissionDenied()
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request, key):
         tasks.download_object_task.delay(key)
         messages.success(request, 'your download will be start soon.')
@@ -53,6 +64,11 @@ class DownloadBucketObject(IsAdminUserMixin, View):
 
 
 class UploadBucketObject(IsAdminUserMixin, View):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.has_perm('products.add_product'):
+            raise PermissionDenied()
+        return super().dispatch(request, *args, **kwargs)
+
     form_class = UploadImageForm
 
     def get(self, request):
