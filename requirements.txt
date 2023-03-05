@@ -1,5 +1,6 @@
 amqp==5.1.1
 asgiref==3.6.0
+async-timeout==4.0.2
 billiard==3.6.4.0
 boto3==1.26.60
 botocore==1.29.60
@@ -14,14 +15,17 @@ Django==4.1.5
 django-celery-beat==2.4.0
 django-storages==1.13.2
 django-timezone-field==5.0
+hiredis==2.2.2
 idna==3.4
 jmespath==1.0.1
 kombu==5.2.4
 Pillow==9.4.0
 prompt-toolkit==3.0.36
+psycopg2-binary==2.9.5
 python-crontab==2.7.1
 python-dateutil==2.8.2
 pytz==2022.7.1
+redis==4.5.1
 requests==2.28.2
 s3transfer==0.6.0
 six==1.16.0
