@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # Third party
     'storages',
     'django_celery_beat',
+    'ckeditor',
 
     # Local
     'accounts.apps.AccountsConfig',
@@ -187,3 +188,11 @@ ZP_API_VERIFY = f"https://api.zarinpal.com/pg/rest/WebGate/PaymentVerification.j
 ZP_API_STARTPAY = f"https://www.zarinpal.com/pg/StartPay/"
 description = "توضیحات مربوط به تراکنش را در این قسمت وارد کنید"
 CallbackURL = 'http://127.0.0.1:8000/payment/verify/'
+
+
+# ckeditor
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+    },
+}
